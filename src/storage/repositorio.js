@@ -10,13 +10,30 @@ function gerarId() {
 export function obterTodosRegistros() {
   try {
     const dados = localStorage.getItem(CHAVE_STORAGE);
-    return dados ? JSON.parse(dados) : [];
-  } catch {
+    if (!dados) {
+      return [];
+    }
+
+    const parsed = JSON.parse(dados);
+
+    // Garante que o retorno é estritamente um array para evitar quebras em .filter() ou .map()
+    if (!Array.isArray(parsed)) {
+      console.warn(`[Studio Rita Storage] Conteúdo inválido no localStorage para "${CHAVE_STORAGE}". Esperava-se um array.`);
+      return [];
+    }
+
+    return parsed;
+  } catch (erro) {
+    console.warn(`[Studio Rita Storage] Erro ao interpretar JSON do localStorage:`, erro);
     return [];
   }
 }
 
 function salvarTodosRegistros(lista) {
+  if (!Array.isArray(lista)) {
+    console.warn(`[Studio Rita Storage] Tentativa de salvar dados que não são um array.`);
+    return;
+  }
   localStorage.setItem(CHAVE_STORAGE, JSON.stringify(lista));
 }
 
