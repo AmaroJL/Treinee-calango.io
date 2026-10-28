@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex">
+  <title>Demonstração do Painel da Rita — Studio Rita</title>
+  <link rel="stylesheet" href="../src/ui/telaPainelRita.css">
+  <style>
+    /* Moldura exclusiva do preview; não substitui a estrutura da issue #1. */
+    :root {
+      --cor-primaria: #7c3aed;
+      --cor-fundo: #f8fafc;
+      --cor-card: #ffffff;
+      --cor-texto: #1e293b;
+      --cor-texto-secundario: #64748b;
+      --cor-borda: #e2e8f0;
+      --raio-borda: 8px;
+    }
+    body {
+      margin: 0;
+      background: var(--cor-fundo);
+      color: var(--cor-texto);
+      font-family: system-ui, sans-serif;
+      line-height: 1.5;
+    }
+    header, main, footer {
+      box-sizing: border-box;
+      width: 100%;
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 1.5rem 1rem;
+    }
+    header { border-bottom: 1px solid var(--cor-borda); }
+    h1 { margin: 0; color: var(--cor-primaria); }
+    h2 { font-size: 1.25rem; }
+    header p, footer p { margin-bottom: 0; }
+    footer { color: var(--cor-texto-secundario); }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Studio Rita</h1>
+    <p><strong>Demonstração visual do Painel da Rita</strong></p>
+    <p>Todos os nomes, telefones e atendimentos abaixo são fictícios.
+      Esta página não acessa armazenamento nem cancela agendamentos.</p>
+    <p id="preview-instrucoes"></p>
+  </header>
+  <main>
+    <section id="secao-painel" aria-labelledby="titulo-painel">
+      <h2 id="titulo-painel">Agenda do dia</h2>
+      <noscript>Ative o JavaScript para visualizar a demonstração.</noscript>
+    </section>
+  </main>
+  <footer>
+    <p>A ordenação e a formatação deste preview usam respostas fixas de demonstração.
+      As regras reais das issues #2 e #3 não estão integradas.
+      Cancelamento, persistência e liberação de horários permanecem pendentes.</p>
+  </footer>
+  <script type="module">
+    import { inicializarTelaPainelRita } from '../src/ui/telaPainelRita.js';
+
+    const hoje = new Date();
+    const dataDemo = [
+      hoje.getFullYear(),
+      String(hoje.getMonth() + 1).padStart(2, '0'),
+      String(hoje.getDate()).padStart(2, '0')
+    ].join('-');
+    document.getElementById('preview-instrucoes').textContent =
+      `A data de hoje (${hoje.toLocaleDateString('pt-BR')}) contém três exemplos. Selecione outra data para visualizar a lista vazia.`;
+
+    // Fixtures isoladas. Não são regras ou repositório para uso em produção.
+    const registrosDemo = [
+      { id: 'demo-14', tipo: 'agendamento', data: dataDemo, inicio: 840, duracao: 90,
+        servicoId: 'coloracao', servicoNome: 'Coloração', preco: 120,
+        clienteNome: 'Cliente Exemplo C', clienteTelefone: '00000000003', status: 'ativo' },
+      { id: 'demo-09', tipo: 'agendamento', data: dataDemo, inicio: 540, duracao: 60,
+        servicoId: 'corte', servicoNome: 'Corte', preco: 50,
+        clienteNome: 'Cliente Exemplo A', clienteTelefone: '00000000001', status: 'ativo' },
+      { id: 'demo-1030', tipo: 'agendamento', data: dataDemo, inicio: 630, duracao: 30,
+        servicoId: 'escova', servicoNome: 'Escova', preco: 35,
+        clienteNome: 'Cliente Exemplo B', clienteTelefone: '00000000002', status: 'ativo' }
+    ];
+    const ordemDemo = ['demo-09', 'demo-1030', 'demo-14'];
+    const textosHorariosDemo = {
+      540: '09:00', 600: '10:00', 630: '10:30',
+      660: '11:00', 840: '14:00', 930: '15:30'
+    };
+
+    inicializarTelaPainelRita({
+      listarPorData: (dataISO) => dataISO === dataDemo
+        ? registrosDemo.map((registro) => ({ ...registro })) : [],
+      // Resposta predefinida para os três exemplos; não implementa ordenação real.
+      ordenarPorHorario: (lista) => ordemDemo
+        .map((id) => lista.find((registro) => registro.id === id))
+        .filter(Boolean),
+      minutosParaHora: (minutos) => {
+        if (!(minutos in textosHorariosDemo)) {
+          throw new Error('Horário não previsto na demonstração.');
+        }
+        return textosHorariosDemo[minutos];
+      }
+    });
+  </script>
+</body>
+</html>
