@@ -6,6 +6,9 @@ function configurarNavegacaoAbas() {
   botoesAba.forEach((botao) => {
     botao.addEventListener('click', () => {
       const idAlvo = botao.dataset.alvo;
+      const secaoDesejada = document.getElementById(idAlvo);
+
+      if (!secaoDesejada) return;
 
       // Remove a classe ativa de todos os botões e seções
       botoesAba.forEach((b) => b.classList.remove('ativo'));
@@ -13,9 +16,10 @@ function configurarNavegacaoAbas() {
 
       // Ativa o botão clicado e a seção correspondente
       botao.classList.add('ativo');
-      const secaoDesejada = document.getElementById(idAlvo);
-      if (secaoDesejada) {
-        secaoDesejada.classList.add('ativa');
+      secaoDesejada.classList.add('ativa');
+
+      if (typeof aoTrocarAba === 'function') {
+        aoTrocarAba(idAlvo);
       }
     });
   });
@@ -23,5 +27,9 @@ function configurarNavegacaoAbas() {
 
 // Inicializa os módulos principais quando o DOM estiver carregado
 document.addEventListener('DOMContentLoaded', () => {
-  configurarNavegacaoAbas();
+  configurarNavegacaoAbas((abaAtivaId) => {
+    document.dispatchEvent(
+      new CustomEvent('aba:alterada', { detail: { abaAtivaId } })
+    );
+  });
 });
