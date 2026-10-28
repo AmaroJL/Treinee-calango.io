@@ -57,6 +57,7 @@
   </footer>
   <script type="module">
     import { inicializarTelaAgendar } from '../src/ui/telaAgendar.js';
+    import { validarDadosCliente } from '../src/regras/validacao.js';
 
     // Fixture exclusiva do preview. O código final receberá listarServicos do PR #9.
     const servicosDemonstracao = [
@@ -67,7 +68,10 @@
     ];
 
     inicializarTelaAgendar({
-      listarServicos: () => servicosDemonstracao.map((servico) => ({ ...servico }))
+      listarServicos: () => servicosDemonstracao.map((servico) => ({ ...servico })),
+      validarDadosCliente,
+      listarPorData: () => [],
+      salvarRegistro: () => { throw new Error('Preview não salva agendamentos.'); }
     });
   </script>
 </body>
