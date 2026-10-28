@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Agenda Studio Rita</title>
+  <link rel="stylesheet" href="./style.css">
+</head>
+<body>
+
+  <header class="header-principal">
+    <div class="container header-content">
+      <h1>Studio Rita</h1>
+      <p class="subtitulo">Agendamento de Serviços</p>
+      
+      <!-- Navegação por abas na mesma página -->
+      <nav class="nav-abas">
+        <button id="btn-aba-agendar" class="btn-aba ativo" data-alvo="secao-agendar">Agendar Atendimento</button>
+        <button id="btn-aba-painel" class="btn-aba" data-alvo="secao-painel">Painel da Rita</button>
+      </nav>
+    </div>
+  </header>
+
+  <main class="container main-content">
+    
+    <!-- SEÇÃO 1: VISÃO DA CLIENTE -->
+    <section id="secao-agendar" class="secao-conteudo ativa">
+      <h2>Escolha seu horário</h2>
+      <div id="mensagem-feedback" class="feedback-container hidden"></div>
+      
+      <!-- O conteúdo dinâmico (serviços, calendário e horários) será injetado aqui via JS -->
+      <div class="placeholder-aviso">Módulo de Agendamento (Será implementado nas próximas issues)</div>
+    </section>
+
+    <!-- SEÇÃO 2: PAINEL DA RITA -->
+    <section id="secao-painel" class="secao-conteudo hidden">
+      <h2>Painel de Gestão - Rita</h2>
+      
+      <!-- O painel de compromissos e bloqueios será injetado aqui via JS -->
+      <div class="placeholder-aviso">Módulo do Painel da Rita (Será implementado nas próximas issues)</div>
+    </section>
+
+  </main>
+
+  <footer class="footer-principal">
+    <p>© 2026 Studio Rita • Desenvolvido para o processo Trainee calang.io</p>
+  </footer>
+
+  <script type="module" src="./src/main.js"></script>
+</body>
+</html>

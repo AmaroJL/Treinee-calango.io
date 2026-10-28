@@ -1,8 +1,11 @@
 {
   "name": "agenda-studio-rita",
   "version": "1.0.0",
+  "description": "Sistema de agendamento web para o Studio Rita (Processo Trainee calang.io 2026.2)",
   "type": "module",
   "scripts": {
     "test": "node --test"
-  }
+  },
+  "keywords": [],
+  "license": "ISC"
 }
