@@ -1,5 +1,5 @@
  // Gerencia a alternância de abas na interface de página única
-function configurarNavegacaoAbas() {
+function configurarNavegacaoAbas(aoTrocarAba) {
   const botoesAba = document.querySelectorAll('.btn-aba');
   const secoes = document.querySelectorAll('.secao-conteudo');
 
