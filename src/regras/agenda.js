@@ -11,8 +11,9 @@ export function minutosParaHora(minutos) {
 }
 
 export function horaParaMinutos(horaStr) {
+  if (typeof horaStr !== 'string') return 0;
   const [horas, mins] = horaStr.split(':').map(Number);
-  return horas * 60 + mins;
+  return (horas || 0) * 60 + (mins || 0);
 }
 
 export function ehDomingo(dataISO) {
@@ -22,21 +23,44 @@ export function ehDomingo(dataISO) {
   return data.getDay() === 0;
 }
 
-
-// Verifica sobreposição de intervalos: [novoInicio, novoFim) vs [itemInicio, itemFim)
+/**
+ * Valida sobreposição de horários.
+ * Suporta assinatura direta: hasConflito(novo, marcados)
+ */
 export function hasConflito(novo, marcados = []) {
+  if (!novo || typeof novo.inicio !== 'number' || typeof novo.duracao !== 'number' || novo.duracao <= 0) {
+    return false;
+  }
+
   const novoInicio = novo.inicio;
   const novoFim = novo.inicio + novo.duracao;
 
   return marcados.some((item) => {
-    if (item.status === 'cancelado') return false;
-    const itemInicio = item.inicio;
-    const itemFim = item.inicio + item.duracao;
+    if (!item || item.status === 'cancelado') return false;
+    const itemInicio = Number(item.inicio);
+    const itemDuracao = Number(item.duracao);
+    if (isNaN(itemInicio) || isNaN(itemDuracao) || itemDuracao <= 0) return false;
+
+    const itemFim = itemInicio + itemDuracao;
     return novoInicio < itemFim && novoFim > itemInicio;
   });
 }
 
+/**
+ * Alias de compatibilidade com suporte flexível para:
+ * temConflito(novo, marcados) OU temConflito(marcados, novo)
+ */
+export function temConflito(paramA, paramB) {
+  if (Array.isArray(paramA)) {
+    return hasConflito(paramB, paramA);
+  }
+  return hasConflito(paramA, paramB);
+}
+
 export function horarioDentroDoExpediente(inicio, duracao) {
+  if (typeof inicio !== 'number' || typeof duracao !== 'number' || duracao <= 0) {
+    return false;
+  }
   const fim = inicio + duracao;
   if (inicio < EXPEDIENTE_INICIO || fim > EXPEDIENTE_FIM) {
     return false;
@@ -45,17 +69,20 @@ export function horarioDentroDoExpediente(inicio, duracao) {
   return !invadeAlmoco;
 }
 
-
-// Retorna os horários de início disponíveis no formato 'HH:MM' para a duração solicitada.
+/**
+ * Retorna os horários livres em formato 'HH:MM'.
+ * Rejeita durações inválidas ou domingos.
+ */
 export function listarHorariosDisponiveis(dataISO, duracaoServico, agendamentosDoDia = []) {
-  if (ehDomingo(dataISO)) {
+  const duracao = Number(duracaoServico);
+  if (isNaN(duracao) || duracao <= 0 || ehDomingo(dataISO)) {
     return [];
   }
 
   const horariosLivres = [];
   for (let inicio = EXPEDIENTE_INICIO; inicio < EXPEDIENTE_FIM; inicio += INTERVALO_SLOT) {
-    const cabeNoExpediente = horarioDentroDoExpediente(inicio, duracaoServico);
-    const conflita = hasConflito({ inicio, duracao: duracaoServico }, agendamentosDoDia);
+    const cabeNoExpediente = horarioDentroDoExpediente(inicio, duracao);
+    const conflita = hasConflito({ inicio, duracao }, agendamentosDoDia);
 
     if (cabeNoExpediente && !conflita) {
       horariosLivres.push(minutosParaHora(inicio));
@@ -66,5 +93,6 @@ export function listarHorariosDisponiveis(dataISO, duracaoServico, agendamentosD
 }
 
 export function ordenarPorHorario(agendamentos = []) {
-  return [...agendamentos].sort((a, b) => a.inicio - b.inicio);
+  if (!Array.isArray(agendamentos)) return [];
+  return [...agendamentos].sort((a, b) => Number(a.inicio) - Number(b.inicio));
 }
