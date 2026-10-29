@@ -3,7 +3,7 @@ import { inicializarTelaAgendar } from './ui/telaAgendar.js';
 import { listarHorariosDisponiveis, hasConflito, horaParaMinutos, ehDomingo, ordenarPorHorario, minutosParaHora } from './regras/agenda.js';
 import { listarServicos } from './regras/servicos.js';
 import { validarDadosCliente } from './regras/validacao.js';
-import { listarPorData, salvarRegistro, cancelarRegistro } from './storage/repositorio.js';
+import { listarPorData, salvarRegistro, cancelarRegistro, concluirRegistro } from './storage/repositorio.js';
 
  // Gerencia a alternância de abas na interface de página única
 function configurarNavegacaoAbas(aoTrocarAba) {
@@ -39,7 +39,8 @@ document.addEventListener('DOMContentLoaded', () => {
     regras: { listarHorariosDisponiveis, hasConflito, horaParaMinutos, ehDomingo }
   });
   const painel = inicializarTelaPainelRita({
-    listarPorData, cancelarRegistro, ordenarPorHorario, minutosParaHora
+    listarPorData, salvarRegistro, cancelarRegistro, concluirRegistro,
+    ordenarPorHorario, minutosParaHora, horaParaMinutos, hasConflito
   });
   document.addEventListener('aba:alterada', (evento) => {
     if (evento.detail.abaAtivaId === 'secao-agendar') telaAgendar.atualizar();
