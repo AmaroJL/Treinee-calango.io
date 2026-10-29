@@ -1,0 +1,375 @@
+/* Interface das issues #5 e #6. Reutiliza os tokens visuais do PR #8. */
+.tela-painel-rita {
+  display: grid;
+  gap: 1.5rem;
+  min-width: 0;
+  color: var(--cor-texto, #1e293b);
+  font: inherit;
+  line-height: 1.5;
+  overflow-wrap: anywhere;
+}
+
+.tela-painel-rita,
+.tela-painel-rita * {
+  box-sizing: border-box;
+}
+
+.tela-painel-rita .painel-aviso {
+  margin: 0;
+  padding: 1rem;
+  border: 1px solid var(--cor-borda, #e2e8f0);
+  border-left: 4px solid var(--cor-primaria, #7c3aed);
+  border-radius: var(--raio-borda, 8px);
+  background: var(--cor-card, #ffffff);
+}
+
+.tela-painel-rita .painel-subtitulo {
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: var(--cor-texto, #1e293b);
+  margin: 0.5rem 0 0 0;
+}
+
+.tela-painel-rita .painel-filtro {
+  display: grid;
+  gap: 0.5rem;
+  min-width: 0;
+}
+
+.tela-painel-rita .painel-filtro label {
+  font-weight: 600;
+}
+
+.tela-painel-rita input[type="date"],
+.tela-painel-rita input[type="text"],
+.tela-painel-rita select {
+  width: 100%;
+  min-width: 0;
+  max-width: 100%;
+  min-height: 44px;
+  padding: 0.65rem 0.75rem;
+  border: 1px solid var(--cor-borda, #e2e8f0);
+  border-radius: var(--raio-borda, 8px);
+  background: var(--cor-card, #ffffff);
+  color: inherit;
+  font: inherit;
+  font-size: 1rem;
+}
+
+.tela-painel-rita input[aria-invalid="true"] {
+  border-color: #b91c1c;
+}
+
+.tela-painel-rita input:focus-visible,
+.tela-painel-rita select:focus-visible,
+.tela-painel-rita button:focus-visible,
+.tela-painel-rita a:focus-visible {
+  outline: 3px solid var(--cor-primaria, #7c3aed);
+  outline-offset: 3px;
+}
+
+.tela-painel-rita #painel-data-ajuda {
+  margin: 0;
+  color: var(--cor-texto-secundario, #64748b);
+  font-size: 0.9375rem;
+}
+
+.tela-painel-rita .painel-mensagem,
+.tela-painel-rita .painel-feedback,
+.tela-painel-rita .painel-bloqueios-vazio,
+.tela-painel-rita .painel-bloqueio-feedback {
+  margin: 0;
+  font-size: 0.95rem;
+}
+
+.tela-painel-rita .painel-mensagem-erro {
+  color: #b91c1c;
+  font-weight: 600;
+}
+
+/* RF07: Formulário de Bloqueio de Horário */
+.tela-painel-rita .painel-bloqueio-secao {
+  background: var(--cor-card, #ffffff);
+  border: 1px solid var(--cor-borda, #e2e8f0);
+  border-radius: var(--raio-borda, 8px);
+  padding: 1.25rem;
+  display: grid;
+  gap: 1rem;
+}
+
+.tela-painel-rita .painel-bloqueio-grid {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: 1fr;
+}
+
+.tela-painel-rita .painel-campo {
+  display: grid;
+  gap: 0.4rem;
+}
+
+.tela-painel-rita .painel-campo label {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--cor-texto-secundario, #64748b);
+}
+
+.tela-painel-rita .painel-bloquear-btn {
+  min-height: 44px;
+  padding: 0.65rem 1.25rem;
+  border: none;
+  border-radius: var(--raio-borda, 8px);
+  background: #334155;
+  color: #ffffff;
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  align-self: end;
+}
+
+.tela-painel-rita .painel-bloquear-btn:hover {
+  background: #1e293b;
+}
+
+/* RF07: Lista de Bloqueios */
+.tela-painel-rita .painel-bloqueios-secao {
+  display: grid;
+  gap: 0.75rem;
+}
+
+.tela-painel-rita .painel-bloqueios-lista {
+  display: grid;
+  gap: 0.75rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.tela-painel-rita .painel-bloqueio-item {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding: 0.85rem 1rem;
+  border: 1px dashed #94a3b8;
+  border-radius: var(--raio-borda, 8px);
+  background: #f1f5f9;
+}
+
+.tela-painel-rita .painel-bloqueio-item-info {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.tela-painel-rita .painel-bloqueio-horario {
+  color: #0f172a;
+  font-weight: 700;
+}
+
+.tela-painel-rita .painel-bloqueio-motivo {
+  background: #e2e8f0;
+  color: #334155;
+  padding: 0.2rem 0.5rem;
+  border-radius: 4px;
+  font-size: 0.85rem;
+  font-weight: 500;
+}
+
+.tela-painel-rita .painel-desbloquear {
+  min-height: 36px;
+  padding: 0.4rem 0.85rem;
+  border: 1px solid #cbd5e1;
+  border-radius: var(--raio-borda, 8px);
+  background: #ffffff;
+  color: #475569;
+  font: inherit;
+  font-size: 0.875rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.tela-painel-rita .painel-desbloquear:hover {
+  border-color: #b91c1c;
+  color: #b91c1c;
+}
+
+/* Agendamentos */
+.tela-painel-rita .painel-lista {
+  display: grid;
+  gap: 1rem;
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.tela-painel-rita .painel-agendamento {
+  display: grid;
+  gap: 1rem;
+  min-width: 0;
+  padding: 1.25rem;
+  border: 1px solid var(--cor-borda, #e2e8f0);
+  border-radius: var(--raio-borda, 8px);
+  background: var(--cor-card, #ffffff);
+  transition: border-color 0.2s ease;
+}
+
+.tela-painel-rita .painel-agendamento.painel-item-concluido {
+  border-left: 4px solid #16a34a;
+  background: #fcfdfc;
+}
+
+.tela-painel-rita .painel-agendamento-cabecalho {
+  display: grid;
+  gap: 0.25rem;
+  min-width: 0;
+}
+
+.tela-painel-rita .painel-horario {
+  margin: 0;
+  color: var(--cor-primaria, #7c3aed);
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+.tela-painel-rita h3 {
+  margin: 0;
+  font-size: 1.125rem;
+}
+
+.tela-painel-rita .painel-cliente {
+  display: grid;
+  gap: 0.75rem;
+  min-width: 0;
+  margin: 0;
+}
+
+.tela-painel-rita .painel-cliente > div {
+  min-width: 0;
+}
+
+.tela-painel-rita dt {
+  color: var(--cor-texto-secundario, #64748b);
+  font-size: 0.875rem;
+}
+
+.tela-painel-rita dd {
+  margin: 0;
+}
+
+.tela-painel-rita .badge-concluido {
+  display: inline-block;
+  background: #dcfce7;
+  color: #15803d;
+  font-weight: 700;
+  padding: 0.15rem 0.5rem;
+  border-radius: 4px;
+  font-size: 0.85rem;
+}
+
+/* Ações do Agendamento: Concluir, WhatsApp, Cancelar */
+.tela-painel-rita .painel-acoes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  align-items: center;
+  padding-top: 0.5rem;
+  border-top: 1px solid var(--cor-borda, #e2e8f0);
+}
+
+.tela-painel-rita .painel-concluir {
+  min-height: 40px;
+  padding: 0.5rem 1rem;
+  border: 1px solid #16a34a;
+  border-radius: var(--raio-borda, 8px);
+  background: #ffffff;
+  color: #16a34a;
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.tela-painel-rita .painel-concluir:hover:not(:disabled) {
+  background: #16a34a;
+  color: #ffffff;
+}
+
+.tela-painel-rita .painel-concluir.btn-concluido-desabilitado {
+  border-color: #dcfce7;
+  background: #f0fdf4;
+  color: #15803d;
+  cursor: default;
+}
+
+.tela-painel-rita .painel-whatsapp {
+  min-height: 40px;
+  padding: 0.5rem 1rem;
+  border: 1px solid #25d366;
+  border-radius: var(--raio-borda, 8px);
+  background: #25d366;
+  color: #ffffff;
+  font: inherit;
+  font-weight: 600;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.35rem;
+  transition: background-color 0.2s ease;
+}
+
+.tela-painel-rita .painel-whatsapp:hover {
+  background: #1ebd5a;
+}
+
+.tela-painel-rita .painel-cancelar {
+  min-height: 40px;
+  padding: 0.5rem 1rem;
+  border: 1px solid #b91c1c;
+  border-radius: var(--raio-borda, 8px);
+  background: var(--cor-card, #ffffff);
+  color: #b91c1c;
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.tela-painel-rita .painel-cancelar:hover:not(:disabled) {
+  background: #fef2f2;
+}
+
+.tela-painel-rita .painel-cancelar:disabled {
+  border-color: var(--cor-borda, #e2e8f0);
+  background: #f1f5f9;
+  color: #94a3b8;
+  cursor: not-allowed;
+}
+
+@media (min-width: 600px) {
+  .tela-painel-rita .painel-filtro input {
+    max-width: 20rem;
+  }
+
+  .tela-painel-rita .painel-bloqueio-grid {
+    grid-template-columns: 140px 140px 1fr auto;
+  }
+
+  .tela-painel-rita .painel-cliente {
+    grid-template-columns: minmax(0, 2fr) minmax(0, 2fr) minmax(0, 1fr);
+  }
+
+  .tela-painel-rita .painel-acoes {
+    justify-content: flex-start;
+  }
+}
+
+.tela-painel-rita .painel-feedback:focus-visible {
+  outline: 3px solid var(--cor-primaria, #7c3aed);
+  outline-offset: 3px;
+}
