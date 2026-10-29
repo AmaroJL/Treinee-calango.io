@@ -1,4 +1,5 @@
 import { inicializarTelaAgendar } from './ui/telaAgendar.js';
+import { listarHorariosDisponiveis, hasConflito, horaParaMinutos, ehDomingo } from './regras/agenda.js';
 import { listarServicos } from './regras/servicos.js';
 import { validarDadosCliente } from './regras/validacao.js';
 import { listarPorData, salvarRegistro } from './storage/repositorio.js';
@@ -33,12 +34,9 @@ function configurarNavegacaoAbas(aoTrocarAba) {
 // Inicializa os módulos principais quando o DOM estiver carregado
 document.addEventListener('DOMContentLoaded', () => {
   const telaAgendar = inicializarTelaAgendar({
-    listarServicos, validarDadosCliente, listarPorData, salvarRegistro
+    listarServicos, validarDadosCliente, listarPorData, salvarRegistro,
+    regras: { listarHorariosDisponiveis, hasConflito, horaParaMinutos, ehDomingo }
   });
-  // Ausência ou falha do PR #12 mantém a confirmação bloqueada.
-  import('./regras/agenda.js')
-    .then((regras) => telaAgendar.definirRegras(regras))
-    .catch(() => telaAgendar.definirRegras(null));
   document.addEventListener('aba:alterada', (evento) => {
     if (evento.detail.abaAtivaId === 'secao-agendar') telaAgendar.atualizar();
   });

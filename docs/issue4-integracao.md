@@ -1,25 +1,29 @@
-# Integração da tela Agendar (#4)
+# Tela Agendar (#4)
 
-A página principal usa catálogo, validação e repositório integrados na main.
-O motor é importado de src/regras/agenda.js. Se estiver ausente ou incompleto,
-a seleção de horários e a confirmação permanecem bloqueadas com aviso explícito.
-Após integrar o PR #12, recarregue a página para carregar o módulo.
+A página principal inicializa a tela com catálogo, validação e repositório reais,
+e importa listarHorariosDisponiveis, hasConflito, horaParaMinutos e ehDomingo do
+motor integrado na main pelo PR #12 (merge 3ae00e9).
 
-Contrato consultado no PR #12 (bf6761e): listarHorariosDisponiveis retorna
-strings HH:MM; horaParaMinutos converte a seleção antes de salvar. O registro
-usa data YYYY-MM-DD, inicio e duracao numéricos, servicoId, servicoNome, preco,
-clienteNome e clienteTelefone. ID e status são gerados pelo repositório.
-A interface usa ehDomingo para a mensagem específica e hasConflito na confirmação.
+Horários são strings HH:MM na interface; inicio e duracao são minutos numéricos
+no registro salvo. O repositório gera id/status. A confirmação relê a data e
+revalida disponibilidade/conflito antes de salvar; limpa a seleção e atualiza
+os horários após sucesso. Uma segunda submissão sem nova seleção não grava.
+A aba Agendar consulta novamente ao ser reaberta e no evento storage.
 
-Pendências: validar novamente os contratos após as correções/merge do PR #12;
-executar o fluxo completo no navegador, recarga/persistência e retorno após
-cancelamento no painel integrado. A versão consultada do motor não filtra horários
-já passados hoje: combinar essa regra com a equipe, sem implementá-la na interface.
-A proteção contra duplo envio vale para esta tela; localStorage não oferece
-transações atômicas entre abas. O repositório atual trata leitura inválida como
-lista vazia; recuperação de dados corrompidos permanece responsabilidade da #2.
+Validação executada nesta etapa:
+- npm test: 19 testes passaram (10 do motor e 9 da interface).
+- Testes da interface usam DOM mínimo; os dois casos novos usam o motor real e
+  o repositório real sobre armazenamento em memória.
+- Navegador na página principal em origem exclusiva de teste 127.0.0.1:8002:
+  quatro serviços/valores, erro de nome vazio, telefone curto, salvamento fictício
+  de corte às 10h em 2099-01-05, atualização dos horários e recarga real. Após
+  recarregar, 10h e 10h30 continuaram bloqueados para escova. Domingo sem horários.
+- Almoço, limite de expediente, conflitos e envio repetido cobertos na suíte.
+- Sintaxe e git diff --check passaram.
 
-npm test executa testes da interface com DOM mínimo, regras controladas e
-repositório real sobre armazenamento em memória. Não comprova persistência de
-navegador, layout em aparelhos físicos ou comportamento real do motor ausente.
-preview/agendar.html continua isolado, com dados demonstrativos e sem salvamento.
+O preview continua isolado e sem salvamento. Testes em aparelho físico e leitor
+de tela não foram executados. A integração de cancelamento com o painel pertence
+à #5. A regra de rejeitar horários passados no dia atual não existe no motor e
+não foi duplicada na interface; permanece ponto de alinhamento com a equipe.
+O repositório trata leitura inválida como lista vazia; recuperação de conteúdo
+corrompido é responsabilidade da #2. Não há transações atômicas entre abas.

@@ -3,6 +3,7 @@ import assert from 'node:assert/strict';
 import { inicializarTelaAgendar } from '../src/ui/telaAgendar.js';
 import { listarServicos } from '../src/regras/servicos.js';
 import { validarDadosCliente } from '../src/regras/validacao.js';
+import * as regrasReais from '../src/regras/agenda.js';
 import * as repositorio from '../src/storage/repositorio.js';
 
 // DOM mínimo para testar os eventos e a integração de dados em Node.
@@ -41,7 +42,7 @@ class Elemento {
   }
   querySelector(sel) { return this.querySelectorAll(sel)[0] ?? null; }
 }
-function preparar({ regras = true, salvar = repositorio.salvarRegistro } = {}) {
+function preparar({ regras = true, salvar = repositorio.salvarRegistro, motorInjetado } = {}) {
   globalThis.document = { createElement: tag => new Elemento(tag) };
   globalThis.CustomEvent = class {};
   const memoria = new Map();
@@ -50,7 +51,7 @@ function preparar({ regras = true, salvar = repositorio.salvarRegistro } = {}) {
   let livres = ['10:00', '11:00'];
   let conflito = false;
   const consultas = [];
-  const motor = {
+  const motor = motorInjetado ?? {
     listarHorariosDisponiveis: (...args) => { consultas.push(args); return livres; },
     hasConflito: () => conflito,
     horaParaMinutos: h => ({ '10:00': 600, '11:00': 660 })[h],
@@ -141,4 +142,33 @@ test('troca de serviço e data limpa horário que deixou de ser válido', () => 
   t.q('#agendar-data').value = '';
   t.q('form').emitir('change', t.q('#agendar-data'));
   assert.equal(t.q('.agendar-horarios').children.length, 0);
+});
+
+
+test('motor real: salvar corte bloqueia 09:00/09:30 para escova e persiste no repositório', async () => {
+  const t = preparar({ motorInjetado: regrasReais }); t.preencher();
+  t.q('#agendar-data').value = '2099-01-05'; // segunda-feira
+  t.tela.atualizar(); t.selecionar(); t.q('form').emitir('submit');
+  const recarregado = await import('../src/storage/repositorio.js?persistencia-real');
+  assert.equal(recarregado.listarPorData('2099-01-05')[0].inicio, 540);
+  const radios = t.q('.agendar-servicos').querySelectorAll('input');
+  radios[0].checked = false; radios[1].checked = true;
+  t.q('form').emitir('change', radios[1]);
+  const horarios = t.q('.agendar-horarios').children.map(e => e.textContent);
+  assert.equal(horarios.includes('09:00'), false);
+  assert.equal(horarios.includes('09:30'), false);
+  assert.equal(horarios.includes('10:00'), true);
+});
+
+test('motor real: domingo, almoço e fim de expediente são respeitados na interface', () => {
+  const t = preparar({ motorInjetado: regrasReais }); t.preencher();
+  t.q('#agendar-data').value = '2026-11-01'; t.tela.atualizar();
+  assert.equal(t.q('.agendar-horarios').children.length, 0);
+  assert.match(t.q('#agendar-horarios-mensagem').textContent, /domingos/);
+  t.q('#agendar-data').value = '2099-01-05';
+  const radios = t.q('.agendar-servicos').querySelectorAll('input');
+  radios[0].checked = false; radios[3].checked = true; t.tela.atualizar();
+  const horarios = t.q('.agendar-horarios').children.map(e => e.textContent);
+  for (const h of ['11:00', '11:30', '12:00', '12:30', '17:00', '17:30', '18:00']) assert.equal(horarios.includes(h), false);
+  assert.equal(horarios.includes('16:30'), true);
 });
