@@ -1,33 +1,36 @@
-# Painel da Rita (#5)
+# Painel da Rita (#5): integração final
 
-A página principal inicializa o painel com listarPorData/cancelarRegistro do
-repositório e ordenarPorHorario/minutosParaHora reais, integrados à main pelo
-PR #12 (merge 3ae00e9). A data inicial é hoje no fuso local do navegador.
-A lista exibe início, término, serviço, cliente, telefone e status.
+A main recebeu a #4 pelo PR #10 (4ff53da). A branch #5 incorpora essa base e
+preserva as duas interfaces, suas inicializações e os dois arquivos de CSS.
+main.js usa catálogo/validação/repositório e motor existentes sem duplicação.
 
-A consulta é refeita ao trocar data, reabrir a aba e receber agenda:alterada ou
-storage. Cancelar pede confirmação, relê o registro ativo, chama o repositório,
-atualiza a lista e emite agenda:alterada com data/id. Itens concluídos não são
-canceláveis. Recusar preserva dados; falhas de gravação não anunciam sucesso.
-O preview mantém fixtures isoladas, sem cancelamento real.
+O painel usa listarPorData, cancelarRegistro, ordenarPorHorario e minutosParaHora
+reais. Cancelar confirma, relê o registro ativo, grava pelo repositório, atualiza a
+lista e emite agenda:alterada. Esse evento atualiza Agendar e Painel; alternância
+de abas e storage também reconsultam os dados. Início/término, serviço, cliente,
+telefone, feedback acessível e foco foram preservados.
 
-Verificações executadas:
-- npm test: 21 testes passaram (10 do motor e 11 do painel).
-- Casos com motor/repositório reais comprovam ordem 09h/10h30/14h, início/término
-  e liberação de 09h/09h30 após cancelamento de um corte em armazenamento em memória.
-- Demais regressões: consulta por data, confirmação recusada, repetição, alteração
-  anterior do item, erro de gravação/leitura, data vazia e preview bloqueado.
-- Navegador na página principal, origem exclusiva de testes 127.0.0.1:8002:
-  consulta do corte fictício às 10h em 2099-01-05, exibição 10:00–11:00 com serviço,
-  nome e telefone, cancelamento real, lista atualizada e recarga real confirmando
-  a exclusão. Abertura pela aba e seleção de data por teclado também verificadas.
-- Sintaxe e git diff --check passaram.
+Verificação automatizada: npm test com 31 testes passando (10 motor, 9 Agendar,
+11 painel e 1 da inicialização/navegação conjunta). A regressão de main usa telas
+observáveis para confirmar dependências reais e reconsultas de ambas as telas nos
+eventos; testes específicos exercitam lógica real das telas/motor/repositório.
+Sintaxe e verificações de diff também passaram.
 
-Pendências: PR #10 ainda em revisão. Nenhum arquivo da #4 foi incorporado a esta
-branch. Após seu merge na main, atualizar a branch #5 preservando ambas as
-inicializações em main.js e links de CSS em index.html; testar criar/agendar,
-cancelar e voltar para Agendar com liberação imediata dos horários na mesma página.
-Até esses testes conjuntos, manter o PR #11 como Draft.
-Celular físico e leitor de tela não foram testados. A recuperação de storage
-corrompido segue na #2; seu retorno [] em falhas de leitura não distingue agenda
-vazia de erro. Nenhum módulo dos colegas foi modificado.
+Navegador: origem exclusiva de teste 127.0.0.1:8002, página principal, 2099-01-06.
+- Nome vazio e telefone de três dígitos bloquearam confirmação com erros por campo.
+- Criados cortes fictícios na ordem 14h, 09h e 10h30 pela tela Agendar.
+- Painel mostrou 09:00–10:00, 10:30–11:30 e 14:00–15:00, com serviço/nome/telefone.
+- Recarga real preservou os três atendimentos e a ordem correta.
+- Escova não oferecia 10h30/11h enquanto o corte ocupava esse intervalo.
+- Cancelado o corte de 10h30 no painel; a lista foi atualizada para dois itens.
+- Ao voltar para Agendar, 10h30/11h reapareceram imediatamente, sem recarga.
+- Nova recarga preservou a exclusão e os atendimentos de 09h/14h.
+- Em viewport de 390px, painel sem transbordamento horizontal
+  (clientWidth e scrollWidth iguais a 390). Override removido após o teste.
+
+Não há dependência funcional restante da #3/#4 para os critérios da #5.
+Celular físico e leitor de tela não foram executados; não são declarados testados.
+Falhas de escrita/leitura têm regressões controladas em Node; não foram provocadas
+no armazenamento real do navegador. A recuperação de dados corrompidos continua
+na #2. O motor não filtra horários passados hoje: ponto já registrado com a equipe,
+sem regra paralela na interface. Nenhum PR foi aprovado ou mesclado nesta etapa.
