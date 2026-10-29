@@ -1,0 +1,171 @@
+/* Interface da issue #5. Reutiliza os tokens visuais do PR #8. */
+.tela-painel-rita {
+  display: grid;
+  gap: 1.25rem;
+  min-width: 0;
+  color: var(--cor-texto, #1e293b);
+  font: inherit;
+  line-height: 1.5;
+  overflow-wrap: anywhere;
+}
+
+.tela-painel-rita,
+.tela-painel-rita * {
+  box-sizing: border-box;
+}
+
+.tela-painel-rita .painel-aviso {
+  margin: 0;
+  padding: 1rem;
+  border: 1px solid var(--cor-borda, #e2e8f0);
+  border-left: 4px solid var(--cor-primaria, #7c3aed);
+  border-radius: var(--raio-borda, 8px);
+  background: var(--cor-card, #ffffff);
+}
+
+.tela-painel-rita .painel-filtro {
+  display: grid;
+  gap: 0.5rem;
+  min-width: 0;
+}
+
+.tela-painel-rita .painel-filtro label {
+  font-weight: 600;
+}
+
+.tela-painel-rita input[type="date"] {
+  width: 100%;
+  min-width: 0;
+  max-width: 100%;
+  min-height: 48px;
+  padding: 0.75rem;
+  border: 1px solid var(--cor-borda, #e2e8f0);
+  border-radius: var(--raio-borda, 8px);
+  background: var(--cor-card, #ffffff);
+  color: inherit;
+  font: inherit;
+  font-size: 1rem;
+}
+
+.tela-painel-rita input[aria-invalid="true"] {
+  border-color: #b91c1c;
+}
+
+.tela-painel-rita input:focus-visible,
+.tela-painel-rita button:focus-visible {
+  outline: 3px solid var(--cor-primaria, #7c3aed);
+  outline-offset: 3px;
+}
+
+.tela-painel-rita #painel-data-ajuda {
+  margin: 0;
+  color: var(--cor-texto-secundario, #64748b);
+  font-size: 0.9375rem;
+}
+
+.tela-painel-rita .painel-mensagem,
+.tela-painel-rita .painel-feedback {
+  margin: 0;
+}
+
+.tela-painel-rita .painel-mensagem-erro {
+  color: #b91c1c;
+}
+
+.tela-painel-rita .painel-lista {
+  display: grid;
+  gap: 1rem;
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.tela-painel-rita .painel-agendamento {
+  display: grid;
+  gap: 1rem;
+  min-width: 0;
+  padding: 1rem;
+  border: 1px solid var(--cor-borda, #e2e8f0);
+  border-radius: var(--raio-borda, 8px);
+  background: var(--cor-card, #ffffff);
+}
+
+.tela-painel-rita .painel-agendamento-cabecalho {
+  display: grid;
+  gap: 0.25rem;
+  min-width: 0;
+}
+
+.tela-painel-rita .painel-horario {
+  margin: 0;
+  color: var(--cor-primaria, #7c3aed);
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+.tela-painel-rita h3 {
+  margin: 0;
+  font-size: 1.125rem;
+}
+
+.tela-painel-rita .painel-cliente {
+  display: grid;
+  gap: 0.75rem;
+  min-width: 0;
+  margin: 0;
+}
+
+.tela-painel-rita .painel-cliente > div {
+  min-width: 0;
+}
+
+.tela-painel-rita dt {
+  color: var(--cor-texto-secundario, #64748b);
+  font-size: 0.875rem;
+}
+
+.tela-painel-rita dd {
+  margin: 0;
+}
+
+.tela-painel-rita .painel-cancelar {
+  width: 100%;
+  min-height: 44px;
+  padding: 0.75rem 1rem;
+  border: 1px solid #b91c1c;
+  border-radius: var(--raio-borda, 8px);
+  background: var(--cor-card, #ffffff);
+  color: #b91c1c;
+  font: inherit;
+  font-weight: 600;
+  white-space: normal;
+  cursor: pointer;
+}
+
+.tela-painel-rita .painel-cancelar:disabled {
+  border-color: var(--cor-borda, #e2e8f0);
+  background: #e2e8f0;
+  color: #475569;
+  cursor: not-allowed;
+}
+
+@media (min-width: 600px) {
+  .tela-painel-rita .painel-filtro input {
+    max-width: 20rem;
+  }
+
+  .tela-painel-rita .painel-cliente {
+    grid-template-columns: minmax(0, 2fr) minmax(0, 2fr) minmax(0, 1fr);
+  }
+
+  .tela-painel-rita .painel-cancelar {
+    width: auto;
+    justify-self: start;
+  }
+}
+
+.tela-painel-rita .painel-feedback:focus-visible {
+  outline: 3px solid var(--cor-primaria, #7c3aed);
+  outline-offset: 3px;
+}
