@@ -1,6 +1,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { inicializarTelaPainelRita } from '../src/ui/telaPainelRita.js';
+import * as regrasReais from '../src/regras/agenda.js';
 import * as repositorio from '../src/storage/repositorio.js';
 
 // DOM mínimo para eventos/dados; não verifica renderização ou leitor de tela.
@@ -34,7 +35,7 @@ class Elemento {
   querySelector(s) { return this.querySelectorAll(s)[0] ?? null; }
 }
 function preparar({ motor = true, confirmar = () => true, cancelar = repositorio.cancelarRegistro,
-  consultar = repositorio.listarPorData } = {}) {
+  consultar = repositorio.listarPorData, motorInjetado } = {}) {
   globalThis.document = { createElement: t => new Elemento(t) };
   globalThis.CustomEvent = class { constructor(type, options) { this.type = type; this.detail = options.detail; } };
   const memoria = new Map();
@@ -42,7 +43,7 @@ function preparar({ motor = true, confirmar = () => true, cancelar = repositorio
   const container = new Elemento();
   let chamadasOrdenacao = 0;
   // Respostas controladas: a regra real do PR #12 não é reproduzida aqui.
-  const regras = {
+  const regras = motorInjetado ?? {
     ordenarPorHorario(lista) {
       chamadasOrdenacao++;
       return [540, 630, 840].flatMap(inicio => lista.filter(r => r.inicio === inicio));
@@ -144,4 +145,28 @@ test('cancelamento permanece removido após reimportar o repositório sobre o me
   t.q('.painel-cancelar').emitir('click');
   const recarregado = await import('../src/storage/repositorio.js?recarregado');
   assert.equal(recarregado.listarPorData(t.hoje).some(r => r.id === a.id), false);
+});
+
+
+test('motor real: lista fora de ordem é exibida cronologicamente com início e término', () => {
+  const t = preparar({ motorInjetado: regrasReais });
+  const data = '2099-01-05';
+  t.adicionar(840, { data }); t.adicionar(540, { data }); t.adicionar(630, { data });
+  t.q('#painel-data').value = data; t.painel.atualizar();
+  assert.deepEqual(t.q('.painel-lista').querySelectorAll('.painel-horario').map(e => e.textContent),
+    ['09:00 – 10:00', '10:30 – 11:00', '14:00 – 15:30']);
+});
+
+test('motor/repositório reais: cancelar libera intervalo e mantém outros atendimentos', () => {
+  const t = preparar({ motorInjetado: regrasReais }); const data = '2099-01-05';
+  const corte = t.adicionar(540, { data }); const outro = t.adicionar(840, { data });
+  t.q('#painel-data').value = data; t.painel.atualizar();
+  const consultarLivres = () => regrasReais.listarHorariosDisponiveis(data, 30, repositorio.listarPorData(data));
+  assert.equal(consultarLivres().includes('09:00'), false);
+  t.q('.painel-cancelar').emitir('click');
+  assert.equal(consultarLivres().includes('09:00'), true);
+  assert.equal(consultarLivres().includes('09:30'), true);
+  assert.deepEqual(repositorio.listarPorData(data).map(r => r.id), [outro.id]);
+  assert.equal(t.container.notificacoes[0].detail.id, corte.id);
+  assert.equal(t.q('.painel-lista').children.length, 1);
 });

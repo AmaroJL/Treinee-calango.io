@@ -1,35 +1,33 @@
-# Painel da Rita (#5): integração e limites
+# Painel da Rita (#5)
 
-A página principal inicializa telaPainelRita com listarPorData e cancelarRegistro
-reais do repositório da #2. A seleção começa na data local de hoje. O painel
-consulta novamente ao trocar a data, reabrir a aba, receber agenda:alterada ou um
-evento storage. Somente registros do tipo agendamento são apresentados.
+A página principal inicializa o painel com listarPorData/cancelarRegistro do
+repositório e ordenarPorHorario/minutosParaHora reais, integrados à main pelo
+PR #12 (merge 3ae00e9). A data inicial é hoje no fuso local do navegador.
+A lista exibe início, término, serviço, cliente, telefone e status.
 
-Cancelar pede confirmação, relê o registro, verifica status ativo, chama o
-repositório, atualiza a lista e emite agenda:alterada com data e id. Recusar não
-altera o registro; erros de gravação não anunciam sucesso. Itens concluídos e
-preview sem cancelarRegistro ficam com botão desabilitado.
+A consulta é refeita ao trocar data, reabrir a aba e receber agenda:alterada ou
+storage. Cancelar pede confirmação, relê o registro ativo, chama o repositório,
+atualiza a lista e emite agenda:alterada com data/id. Itens concluídos não são
+canceláveis. Recusar preserva dados; falhas de gravação não anunciam sucesso.
+O preview mantém fixtures isoladas, sem cancelamento real.
 
-O módulo da #3 é importado de src/regras/agenda.js sem copiar suas funções.
-Após o merge do PR #12, recarregar a página deve fornecer ordenarPorHorario e
-minutosParaHora. A interface usa início e início + duração numéricos em minutos,
-conforme os registros existentes. Sem o motor, a consulta e o cancelamento podem
-funcionar, mas a ordem do repositório é explicitamente sinalizada e os horários
-ficam identificados como pendentes, sem regras provisórias de ordenação/formatação.
+Verificações executadas:
+- npm test: 21 testes passaram (10 do motor e 11 do painel).
+- Casos com motor/repositório reais comprovam ordem 09h/10h30/14h, início/término
+  e liberação de 09h/09h30 após cancelamento de um corte em armazenamento em memória.
+- Demais regressões: consulta por data, confirmação recusada, repetição, alteração
+  anterior do item, erro de gravação/leitura, data vazia e preview bloqueado.
+- Navegador na página principal, origem exclusiva de testes 127.0.0.1:8002:
+  consulta do corte fictício às 10h em 2099-01-05, exibição 10:00–11:00 com serviço,
+  nome e telefone, cancelamento real, lista atualizada e recarga real confirmando
+  a exclusão. Abertura pela aba e seleção de data por teclado também verificadas.
+- Sintaxe e git diff --check passaram.
 
-A branch não contém a implementação da #4. Ao integrar os dois PRs, preservar as
-duas inicializações e os links de CSS em main.js e index.html. A #4 já prepara
-reconsulta ao reabrir Agendar, permitindo refletir os registros cancelados.
-Não foi comprovada a liberação de horários sem motor e sem as telas juntas.
-
-Validação: npm test executa nove testes com DOM mínimo e repositório real sobre
-armazenamento em memória. Motor/confirmador são controlados. A reimportação do
-repositório conserva a exclusão nesse armazenamento; isso não equivale a F5 real.
-No navegador, foram verificadas a abertura pela aba, ausência de motor, lista
-vazia, alteração de data por teclado e foco. O preview mantém dados fictícios e
-cancelamento bloqueado. Persistência após recarga real, cronologia com motor real,
-fluxo cancelar/voltar para Agendar, aparelho físico e leitor de tela ainda pendem.
-
-A recuperação de conteúdo corrompido no storage continua responsabilidade da #2.
-O repositório atual devolve [] em falhas de leitura; o painel não consegue distinguir
-esse caso de uma agenda vazia sem uma mudança no contrato do repositório.
+Pendências: PR #10 ainda em revisão. Nenhum arquivo da #4 foi incorporado a esta
+branch. Após seu merge na main, atualizar a branch #5 preservando ambas as
+inicializações em main.js e links de CSS em index.html; testar criar/agendar,
+cancelar e voltar para Agendar com liberação imediata dos horários na mesma página.
+Até esses testes conjuntos, manter o PR #11 como Draft.
+Celular físico e leitor de tela não foram testados. A recuperação de storage
+corrompido segue na #2; seu retorno [] em falhas de leitura não distingue agenda
+vazia de erro. Nenhum módulo dos colegas foi modificado.

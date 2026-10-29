@@ -104,8 +104,10 @@ export function inicializarTelaPainelRita({
         // Releitura evita atuar sobre um item que já mudou desde a renderização.
         const atual = listarPorData(registro.data).find((item) => item.id === registro.id);
         if (!atual || atual.status !== 'ativo') {
-          atualizar();
-          informar('Este atendimento já foi alterado. A agenda foi atualizada.', true);
+          const atualizou = atualizar();
+          informar(atualizou
+            ? 'Este atendimento já foi alterado. A agenda foi atualizada.'
+            : 'Este atendimento já foi alterado. Não foi possível atualizar a agenda.', true);
           return;
         }
         cancelarRegistro(registro.id);
@@ -132,7 +134,7 @@ export function inicializarTelaPainelRita({
   function atualizar() {
     lista.replaceChildren();
     aviso.hidden = temMotor() && podeCancelar();
-    aviso.textContent = !temMotor()
+    aviso.textContent = aviso.hidden ? '' : !temMotor()
       ? 'A ordem cronológica e a exibição dos horários aguardam a integração da agenda (PR #12). A lista está na ordem fornecida pelo armazenamento.'
       : 'O cancelamento está indisponível nesta visualização.';
     mensagem.classList.remove('painel-mensagem-erro');

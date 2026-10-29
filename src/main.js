@@ -1,4 +1,5 @@
 import { inicializarTelaPainelRita } from './ui/telaPainelRita.js';
+import { ordenarPorHorario, minutosParaHora } from './regras/agenda.js';
 import { listarPorData, cancelarRegistro } from './storage/repositorio.js';
 
  // Gerencia a alternância de abas na interface de página única
@@ -30,10 +31,9 @@ function configurarNavegacaoAbas(aoTrocarAba) {
 
 // Inicializa os módulos principais quando o DOM estiver carregado
 document.addEventListener('DOMContentLoaded', () => {
-  const painel = inicializarTelaPainelRita({ listarPorData, cancelarRegistro });
-  import('./regras/agenda.js')
-    .then((regras) => painel.definirRegras(regras))
-    .catch(() => painel.definirRegras(null));
+  const painel = inicializarTelaPainelRita({
+    listarPorData, cancelarRegistro, ordenarPorHorario, minutosParaHora
+  });
   document.addEventListener('aba:alterada', (evento) => {
     if (evento.detail.abaAtivaId === 'secao-painel') painel.atualizar();
   });
