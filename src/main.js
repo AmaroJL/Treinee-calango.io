@@ -1,3 +1,9 @@
+import { inicializarTelaAgendar } from './ui/telaAgendar.js';
+import { listarHorariosDisponiveis, hasConflito, horaParaMinutos, ehDomingo } from './regras/agenda.js';
+import { listarServicos } from './regras/servicos.js';
+import { validarDadosCliente } from './regras/validacao.js';
+import { listarPorData, salvarRegistro } from './storage/repositorio.js';
+
  // Gerencia a alternância de abas na interface de página única
 function configurarNavegacaoAbas(aoTrocarAba) {
   const botoesAba = document.querySelectorAll('.btn-aba');
@@ -27,6 +33,14 @@ function configurarNavegacaoAbas(aoTrocarAba) {
 
 // Inicializa os módulos principais quando o DOM estiver carregado
 document.addEventListener('DOMContentLoaded', () => {
+  const telaAgendar = inicializarTelaAgendar({
+    listarServicos, validarDadosCliente, listarPorData, salvarRegistro,
+    regras: { listarHorariosDisponiveis, hasConflito, horaParaMinutos, ehDomingo }
+  });
+  document.addEventListener('aba:alterada', (evento) => {
+    if (evento.detail.abaAtivaId === 'secao-agendar') telaAgendar.atualizar();
+  });
+  window.addEventListener('storage', () => telaAgendar.atualizar());
   configurarNavegacaoAbas((abaAtivaId) => {
     document.dispatchEvent(
       new CustomEvent('aba:alterada', { detail: { abaAtivaId } })

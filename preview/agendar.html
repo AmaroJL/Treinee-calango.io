@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex">
+  <title>Demonstração da interface Agendar — Studio Rita</title>
+  <link rel="stylesheet" href="../src/ui/telaAgendar.css">
+  <style>
+    /* Moldura exclusiva da demonstração; não substitui a estrutura do PR #8. */
+    :root {
+      --cor-primaria: #7c3aed;
+      --cor-fundo: #f8fafc;
+      --cor-card: #ffffff;
+      --cor-texto: #1e293b;
+      --cor-texto-secundario: #64748b;
+      --cor-borda: #e2e8f0;
+      --raio-borda: 8px;
+    }
+    body {
+      margin: 0;
+      background: var(--cor-fundo);
+      color: var(--cor-texto);
+      font-family: system-ui, sans-serif;
+      line-height: 1.5;
+    }
+    header, main, footer {
+      box-sizing: border-box;
+      width: 100%;
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 1.5rem 1rem;
+    }
+    header { border-bottom: 1px solid var(--cor-borda); }
+    h1 { margin: 0; color: var(--cor-primaria); }
+    h2 { font-size: 1.25rem; }
+    header p, footer p { margin-bottom: 0; }
+    footer { color: var(--cor-texto-secundario); }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Studio Rita</h1>
+    <p><strong>Demonstração visual da tela Agendar</strong></p>
+    <p>Serviços de exemplo. Esta página não consulta disponibilidade nem salva agendamentos.
+      Use dados fictícios nos campos.</p>
+  </header>
+  <main>
+    <section id="secao-agendar" aria-labelledby="titulo-agendar">
+      <h2 id="titulo-agendar">Escolha seu horário</h2>
+      <noscript>Ative o JavaScript para visualizar a demonstração.</noscript>
+    </section>
+  </main>
+  <footer>
+    <p>A interface depende da integração do catálogo, validação, armazenamento e motor de horários.
+      Esta demonstração não representa a conclusão da issue #4.</p>
+  </footer>
+  <script type="module">
+    import { inicializarTelaAgendar } from '../src/ui/telaAgendar.js';
+    import { validarDadosCliente } from '../src/regras/validacao.js';
+
+    // Fixture exclusiva do preview. O código final receberá listarServicos do PR #9.
+    const servicosDemonstracao = [
+      { id: 'corte', nome: 'Corte', duracao: 60, preco: 50 },
+      { id: 'escova', nome: 'Escova', duracao: 30, preco: 35 },
+      { id: 'manicure', nome: 'Manicure', duracao: 30, preco: 25 },
+      { id: 'coloracao', nome: 'Coloração', duracao: 90, preco: 120 }
+    ];
+
+    inicializarTelaAgendar({
+      listarServicos: () => servicosDemonstracao.map((servico) => ({ ...servico })),
+      validarDadosCliente,
+      listarPorData: () => [],
+      salvarRegistro: () => { throw new Error('Preview não salva agendamentos.'); }
+    });
+  </script>
+</body>
+</html>
