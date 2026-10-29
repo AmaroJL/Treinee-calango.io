@@ -1,58 +1,114 @@
-# Roteiro da entrega final — issue #7
+# Entrega final — issue #7
 
-Esta é a primeira etapa documental, baseada na main `4ff53da`. Não habilita
-publicação, não cria tag e não declara o projeto finalizado.
+## Base integrada
 
-## Antes da publicação
+Main verificada: **87b16f04063357ba8bb474f4ef211b5b919eded7**.
+PR #14 da #6 e PR #11 da #5 confirmados como merged. Issues #1–#6 fechadas.
+#7 permanece aberta até documentação, Pages e tag. Código incorporado à branch
+exclusivamente a partir da main, preservando commits e trabalho dos colegas.
+Esta rodada altera documentação/evidências, não implementações da aplicação.
+Os relatórios issue4/issue5/issue6 são históricos; esta é a verificação integrada.
 
-- [ ] Aguardar revisão/merge da #5 (PR #11) e da #6 pelos responsáveis.
-- [ ] Atualizar docs/entrega-final a partir da main resultante sem perder documentação.
-- [ ] Conferir no código e navegador RF01–RF08 e extra WhatsApp, atualizando a matriz.
-- [ ] Resolver conflitos preservando as duas telas e as funções de #2/#3.
-- [ ] Executar npm test na revisão final e registrar versão do Node, quantidade e resultado.
-- [ ] Validar agendar → painel → cancelar → horário livre; recarregar para persistência.
-- [ ] Validar bloqueio/remoção e conclusão com recarga; conferir link de lembrete.
-- [ ] Capturar evidências reais conforme docs/media/README.md e incluí-las no README.
-- [ ] Revisar limitações, decisões e instruções, removendo status desatualizados.
-- [ ] Conferir Kanban e PRs vinculados; mover para Pronto somente o que estiver entregue.
+## Verificações executadas em 28/10/2026 (BRT)
 
-A issue #7 pede pelo menos cinco decisões comparadas na lista de tarefas, embora
-cite quatro no critério de aceitação; manter as cinco existentes e verificadas.
-O prazo original informado é 28/10/2026 às 23h59. Não declarar cumprimento de prazo
-com base na preparação desta documentação: verificar o registro real da entrega.
+- [x] npm test: **37 aprovados, 0 reprovados**, Node v24.22.1 / npm 11.19.1.
+- [x] Distribuição real: motor 10; Agendar 9; painel 11; diferenciais 6; navegação 1.
+- [x] Navegador: serviços/data/horário, erros de nome/telefone, salvar, consultar
+  três itens fora de ordem, cancelar e conferir liberação ao retornar a Agendar.
+- [x] Bloquear 13h–14h, conferir 13h/13h30 indisponíveis para escova e desbloquear.
+- [x] Concluir e recarregar: status mantido, cancelado ausente e outro atendimento ativo.
+- [x] Link WhatsApp e texto abertos na página oficial; nenhuma mensagem enviada.
+- [x] Painel em 390px sem transbordamento horizontal; viewport restaurado.
+- [x] 15 JPEGs reais em docs/media, com índice, dimensões e condições da captura.
+- [x] Sintaxe de todos os arquivos JavaScript de src/ e tests/ passou.
 
-## GitHub Pages — passos futuros
+Links internos e git diff --check são conferidos antes do commit. A contagem 37 é
+da execução real; não reutiliza a subdivisão 10/10 das telas no relatório histórico
+da #6. Diagnóstico em memória reexecutou 6 testes dos diferenciais e reproduziu o
+DDD 55 em um sétimo caso; não integra a contagem da suíte nem comprova correção.
 
-Executar somente depois da verificação da integração completa e da autorização
-para publicação final. Nesta etapa nenhuma configuração do repositório foi alterada.
+## Limites encontrados
 
-1. Com permissão de administração/manutenção, abrir o repositório no GitHub.
-2. Acessar Settings → Pages → Build and deployment.
-3. Em Source, escolher Deploy from a branch; selecionar main e /(root), pois
-   index.html está na raiz. A pasta docs contém documentação, não a aplicação.
-4. Salvar. Essa ação habilita publicação automática dos próximos pushes na fonte;
-   por isso não deve ser antecipada enquanto a main estiver incompleta.
-5. Acompanhar o workflow de Pages em Actions e a URL informada em Settings → Pages.
-6. Abrir a URL real e confirmar carregamento de CSS/módulos, abas e fluxo completo.
-   Verificar console/rede e uso dos caminhos relativos sob o caminho do repositório.
-7. Testar persistência usando dados fictícios no domínio publicado. Localhost e
-   Pages têm armazenamentos distintos: não esperar migração automática dos dados.
-8. Registrar a URL efetiva e o commit validado no README. Não usar uma URL prevista
-   como prova de que o site está publicado.
+- WhatsApp: nacional de DDD 55 confundido com DDI já informado. Reproduzido:
+  `55900000000` gera `wa.me/55900000000`, em vez de prefixar o DDI. Informar o DDI
+  completo contorna a ambiguidade. Não foi alterado o código da #6 nesta #7.
+- Horários passados hoje continuam ofertados pelo motor; ponto já registrado.
+- Feedback antigo do bloqueio pode permanecer após desbloquear, mas listas e
+  disponibilidade foram atualizadas corretamente. Detalhe de apresentação não alterado.
+- Recuperação de storage corrompido, atomicidade entre abas e sincronização entre
+  dispositivos não existem. Celular físico e leitor de tela não testados.
+- Autoria original das decisões não comprovada pelo histórico. Responsáveis propostos
+  para confirmação: Iago D03/D05; Amaro D01/D02/D04; data informada 27/10/2026.
 
-Esta aplicação não exige build ou instalação de pacotes para servir os arquivos.
-Não foi criado workflow de deploy nesta etapa, nem adicionada configuração de domínio.
+## GitHub Pages — pendência obrigatória de permissão
 
-Fonte oficial consultada para o procedimento:
-[Configuring a publishing source for your GitHub Pages site](https://docs.github.com/en/pages/getting-started-with-github-pages/configuring-a-publishing-source-for-your-github-pages-site).
+A API informou `has_pages: false`, homepage nula e endpoint Pages retornando 404.
+Conta conectada: push true, admin false, maintain false. Não há URL de produção
+confirmada nem permissão suficiente para configurar nesta execução.
 
-## Tag e encerramento — ainda bloqueados nesta etapa
+**Ação do Amaro ou de outro administrador/manutentor:**
 
-- [ ] Confirmar main final testada, Pages verificado e documentação/evidências completas.
-- [ ] Verificar se v1.0 já existe para não sobrescrever uma tag de outra pessoa.
-- [ ] Registrar o SHA exato da main validada e obter autorização para publicar a tag.
-- [ ] Criar/publicar v1.0 nesse SHA somente na etapa final; depois conferir seu destino.
-- [ ] Verificar todos os cards e vínculos de PR; concluir #7 apenas com entrega comprovada.
+1. Abrir [Settings → Pages](https://github.com/AmaroJL/Treinee-calango.io/settings/pages).
+2. Build and deployment → Source: Deploy from a branch.
+3. Selecionar **main** e **/(root)** e salvar; index.html está na raiz, não em docs.
+4. Acompanhar Actions e copiar a URL efetiva de Settings → Pages.
+5. Validar nessa URL CSS/módulos, abas, agendar/cancelar, bloquear/desbloquear e concluir.
+6. Usar dados fictícios; localhost e Pages têm storages separados.
+7. Atualizar README e este registro com URL, commit e resultado antes de encerrar #7.
 
-Não há comando de publicação executado nem declaração de release nesta etapa.
-O campo version: 1.0.0 no package.json já existia e não representa uma tag publicada.
+A aplicação funcional já está na main, portanto o responsável pode habilitar Pages
+antes do merge documental. README/evidências atualizados chegarão à main após o
+merge do PR #13 pelo revisor. Não foi criado workflow ou configuração que publique
+sem autorização.
+
+Fonte: [documentação oficial do GitHub Pages](https://docs.github.com/en/pages/getting-started-with-github-pages/configuring-a-publishing-source-for-your-github-pages-site).
+
+## Kanban e PRs
+
+| Issue | Responsável | PR integrado | Estado consultado |
+|---|---|---|---|
+| #1 | Amaro | #8 | Fechada |
+| #2 | Amaro | #9 | Fechada |
+| #3 | Amaro | #12 | Fechada |
+| #4 | Iago | #10 | Fechada |
+| #5 | Iago | #11 | Fechada |
+| #6 | Amaro | #14 | Fechada |
+| #7 | Iago | #13, não integrado nesta execução | Aberta |
+
+Cards #1–#6 podem ser conferidos para Pronto, pois issues estão fechadas e PRs
+integrados; a coluna não foi certificada. Projects falhou por falta de escopo
+**read:project**. Não ampliei credenciais nem movi cards. Conferir quadro e vínculos
+manualmente; #7 somente Pronto depois de documentação, deploy e tag comprovados.
+
+## Tag v1.0 — preparada, NÃO executada
+
+Consulta remota não encontrou v1.0. Não criada local/remotamente nesta execução.
+O version 1.0.0 do package.json não representa uma release publicada.
+
+**Somente após merge do PR #13, testes da main definitiva e autorização explícita:**
+
+```sh
+git status --short --branch
+git fetch origin --tags
+git ls-remote --tags origin refs/tags/v1.0 'refs/tags/v1.0^{}'
+git checkout main
+git pull --ff-only origin main
+git log -1 --oneline
+npm test
+# Parar se a árvore estiver suja, a tag existir ou o SHA não for o validado.
+# Apenas com autorização para publicar:
+git tag v1.0
+git push origin v1.0
+```
+
+Não sobrescrever tag existente. Registrar SHA de destino, data/hora e consulta remota
+após publicar. Prazo original: 28/10/2026 às 23h59 BRT; esta preparação não comprova
+entrega final concluída dentro do prazo.
+
+## Passos restantes para encerrar #7
+
+- [ ] Equipe confirmar os responsáveis propostos e a autoria dos cinco registros.
+- [ ] Administrador habilitar Pages, validar URL real e registrá-la na documentação.
+- [ ] Revisor aprovar/integrar PR #13; esta execução não faz merge.
+- [ ] Validar main definitiva e publicar v1.0 com autorização do usuário.
+- [ ] Conferir Kanban/vínculos manualmente e encerrar #7 apenas com provas da entrega.

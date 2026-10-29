@@ -1,37 +1,50 @@
-# Requisitos RF01–RF08
+# Matriz RF01–RF08 — versão integrada
 
-Snapshot da main `4ff53da`. “Integrado” descreve código presente nessa base, não
-certifica deploy nem substitui a verificação final da entrega. As pendências
-abaixo não devem ser marcadas concluídas só porque há um PR ou uma função de apoio.
+Base funcional: main `87b16f0`, após PR #14. Issues #1–#6 confirmadas como fechadas.
+Código inspecionado e fluxos abaixo executados nesta etapa. “Integrado” não significa
+que o site já foi publicado ou que a issue #7 esteja encerrada.
 
-| RF | Comportamento | Evidência no código atual | Situação / próxima verificação |
-|---|---|---|---|
-| RF01 | Exibir quatro serviços, duração e preço | `src/regras/servicos.js`, `src/ui/telaAgendar.js` | Integrado pela #2/#4; conferir os quatro valores na versão publicada |
-| RF02 | Horários por data/duração, domingo, almoço, expediente | `listarHorariosDisponiveis`, `ehDomingo` em `src/regras/agenda.js`; tela Agendar | Integrado pela #3/#4; motor não filtra horários já passados hoje |
-| RF03 | Validar nome/telefone e impedir confirmação inválida | `validarDadosCliente(nome, telefone)` e erros por campo na tela | Integrado; telefone exige ao menos 8 dígitos, não valida número real |
-| RF04 | Impedir sobreposição antes de salvar | `hasConflito(novo, marcados)` e releitura em Agendar | Integrado; validar novamente no fluxo final, sem atomicidade entre abas |
-| RF05 | Agenda por data, ordem cronológica, cliente/telefone/serviço | `ordenarPorHorario` já existe; interface do painel ausente na main | Pendente da #5 / PR #11 |
-| RF06 | Cancelar e liberar horário em Agendar | `cancelarRegistro(id)` já existe; ação da interface ausente na main | Pendente da #5 / PR #11 e verificação conjunta na main final |
-| RF07 | Criar/remover bloqueio e impedir agendamento no intervalo | Repositório aceita `tipo: bloqueio`; formulário/ações ausentes | Pendente da #6 e testes de criação, bloqueio e remoção |
-| RF08 | Concluir e persistir status, com indicação visual | `concluirRegistro(id)` já existe; botão/estilo não integrados | Pendente da #6 e teste de recarga |
+| RF | Código / contrato | Situação e verificação |
+|---|---|---|
+| RF01 | `listarServicos`, catálogo e tela Agendar | Integrado (#2/#4); quatro serviços/valores visíveis nas capturas 01/02 |
+| RF02 | `listarHorariosDisponiveis`, `ehDomingo`, expediente e almoço em `agenda.js` | Integrado (#3/#4); testes de domingo/almoço/18h e disponibilidade após operações |
+| RF03 | `validarDadosCliente(nome, telefone)` e erros de campo | Integrado (#2/#4); nome vazio e telefone curto bloqueados no navegador (03/04) |
+| RF04 | Releitura por `listarPorData`, `hasConflito` antes de `salvarRegistro` | Integrado (#3/#4); suíte cobre sobreposição e falha na confirmação; horários ocupados não oferecidos |
+| RF05 | `listarPorData`, `ordenarPorHorario`, `minutosParaHora`, tela Painel | Integrado (#5/PR #11); criação 14h/09h/10h30 exibida 09h/10h30/14h (06) |
+| RF06 | `cancelarRegistro`, eventos e reconsulta das telas | Integrado (#5); cancelar 10h30 liberou 10h30/11h para escova sem recarga (07/08); exclusão mantida após recarga |
+| RF07 | Formulário/lista de bloqueios, `salvarRegistro`/`cancelarRegistro` e conflitos | Integrado (#6/PR #14); bloquear 13h–14h removeu 13h/13h30; desbloquear os restaurou (09–12) |
+| RF08 | `concluirRegistro` e badge Concluído | Integrado (#6/PR #14); atendimento das 09h concluído e mantido após recarga (13) |
 
-## Extras e entregáveis
+## Extra WhatsApp
 
-- Lembrete por WhatsApp: extra da #6, pendente. Validar abertura do link e conteúdo;
-  abrir um link não comprova envio de mensagem, que é ação da pessoa no WhatsApp.
-- Testes: executados nesta etapa, 19 passando na base acima. Reexecutar após merges.
-- Documentação: primeira etapa da #7, em Draft; falta atualizar snapshot/evidências.
-- Prints/GIFs: estrutura preparada, capturas finais pendentes.
-- Pages: roteiro preparado, configuração/publicação final e URL pendentes de verificação.
-- Tag v1.0: não criada/publicada nesta etapa; somente após validação final e autorização.
-- Kanban: verificar manualmente cards, vínculos com PRs e coluna Pronto; não foi
-  declarada conclusão do quadro nesta etapa.
+Integrado pelo PR #14. O link da cliente fictícia abriu a página oficial com
+nome, serviço, data e horário preenchidos (14). Nenhuma mensagem foi enviada.
+Limitação confirmada: número nacional iniciado por DDD 55 é confundido com DDI
+já informado. O caso é documentado; não foi corrigido nesta branch documental.
 
-## Referências de escopo
+## Testes e evidências
 
-- [#2 — Serviços, validação e armazenamento](https://github.com/AmaroJL/Treinee-calango.io/issues/2)
-- [#3 — Motor](https://github.com/AmaroJL/Treinee-calango.io/issues/3)
-- [#4 — Agendar](https://github.com/AmaroJL/Treinee-calango.io/issues/4)
-- [#5 — Painel e cancelamento](https://github.com/AmaroJL/Treinee-calango.io/issues/5)
-- [#6 — Bloqueio, conclusão e WhatsApp](https://github.com/AmaroJL/Treinee-calango.io/issues/6)
-- [#7 — Entrega](https://github.com/AmaroJL/Treinee-calango.io/issues/7)
+`npm test`: 37 aprovados, 0 reprovados — 10 motor, 9 Agendar, 11 painel,
+6 diferenciais e 1 navegação. Sintaxe JavaScript e diff verificados.
+Diagnóstico adicional em memória: 6 testes de diferenciais e 1 reprodução do DDD 55
+passaram; o último comprova a limitação, não uma correção. Não integra a contagem 37.
+[Capturas reais](media/README.md) e [registro da entrega](entrega-final.md).
+
+## Situação dos entregáveis
+
+- Documentação e evidências: preparadas no PR #13; atribuições das decisões são
+  propostas para confirmação de autoria original.
+- Pages: API informou has_pages false; falta permissão admin/maintain para habilitar.
+- Kanban: issues #1–#6 fechadas; coluna dos cards não verificada por falta de read:project.
+- Tag v1.0: ausente na consulta remota; não criada. Somente após merge de #13 e autorização.
+- Issue #7: aberta; não pode ser declarada concluída antes de Pages e tag.
+
+## PRs de implementação
+
+[#8 / estrutura](https://github.com/AmaroJL/Treinee-calango.io/pull/8),
+[#9 / dados](https://github.com/AmaroJL/Treinee-calango.io/pull/9),
+[#12 / motor](https://github.com/AmaroJL/Treinee-calango.io/pull/12),
+[#10 / Agendar](https://github.com/AmaroJL/Treinee-calango.io/pull/10),
+[#11 / Painel](https://github.com/AmaroJL/Treinee-calango.io/pull/11),
+[#14 / diferenciais](https://github.com/AmaroJL/Treinee-calango.io/pull/14): integrados.
+[#13 / entrega](https://github.com/AmaroJL/Treinee-calango.io/pull/13): aguardando revisão/merge.

@@ -1,12 +1,19 @@
 # Decisões técnicas — Studio Rita
 
-Revisão documental da main `4ff53da`. As cinco decisões abaixo já existiam no
-repositório; foram preservadas e confrontadas com o código. O formato adotado é
-o existente no projeto: opções consideradas, decisão/motivo e consequências.
-A interface das issues #5/#6 ainda não está integrada nessa base; referências a
-cancelamento, bloqueio e conclusão descrevem contratos de apoio, não entrega da UI.
+Revisão documental da main `87b16f0`, que integra as issues #1–#6.
+Foram preservadas as cinco decisões, alternativas e justificativas existentes.
+
+**Nota de autoria:** o registro inicial no Git não identifica separadamente quem
+propôs cada decisão. Os responsáveis abaixo são uma **atribuição proposta para
+confirmação da equipe**, baseada nas contribuições verificadas, e não uma afirmação
+de autoria histórica comprovada. A distribuição solicitada é de duas decisões
+para Iago e três para Amaro. A data **27/10/2026** foi informada pelo solicitante
+para os cinco registros; não foi inferida da data dos commits.
 
 ## D01 — Definição do horário de almoço da Rita (Premissa de Negócio)
+- **Data:** 27/10/2026
+- **Responsável (atribuição proposta, a confirmar):** AmaroJL (Amaro Jr.)
+- **Problema ou contexto:** Definir como proteger o almoço no expediente; relação com o motor da #3 e os bloqueios da #6.
 - **Opções consideradas:**
   1. **Fixar horário de almoço das 12:00 às 13:00 (1 hora):** Bloqueio automático na regra de geração de horários livres.
   2. **Fixar horário de almoço das 12:00 às 14:00 (2 horas):** Bloqueio fixo mais longo no meio do expediente.
@@ -17,6 +24,9 @@ cancelamento, bloqueio e conclusão descrevem contratos de apoio, não entrega d
 ---
 
 ## D02 — Formato interno dos horários para cálculo de conflitos
+- **Data:** 27/10/2026
+- **Responsável (atribuição proposta, a confirmar):** AmaroJL (Amaro Jr.)
+- **Problema ou contexto:** Representar intervalos de forma compatível entre o motor da #3 e a persistência da #2.
 - **Opções consideradas:**
   1. **Minutos inteiros a partir da meia-noite (ex: `600` para `10:00`, `630` para `10:30`):** Representação numérica pura.
   2. **Strings no formato `"HH:MM"` (ex: `"10:00"`):** Comparação lexicográfica ou conversão constante com `.split(':')`.
@@ -27,6 +37,9 @@ cancelamento, bloqueio e conclusão descrevem contratos de apoio, não entrega d
 ---
 
 ## D03 — Intervalo da grelha de horários disponíveis (Slots de 30 minutos)
+- **Data:** 27/10/2026
+- **Responsável (atribuição proposta, a confirmar):** IagoBNC (Iago)
+- **Problema ou contexto:** Apresentar a grade de horários na interface da #4 usando os slots definidos no motor da #3; responsabilidade proposta pela integração visual, não autoria exclusiva da regra.
 - **Opções consideradas:**
   1. **Slots de 30 em 30 minutos (09:00, 09:30, 10:00... até 17:30):** Grelha alinhada ao menor tempo de serviço (escova e manicure duram 30 min).
   2. **Slots de 60 em 60 minutos (apenas horas cheias):** Simplificação visual da tela.
@@ -36,15 +49,21 @@ cancelamento, bloqueio e conclusão descrevem contratos de apoio, não entrega d
 ---
 
 ## D04 — Estrutura de persistência no `localStorage` e tratamento de cancelamentos/bloqueios
+- **Data:** 27/10/2026
+- **Responsável (atribuição proposta, a confirmar):** AmaroJL (Amaro Jr.)
+- **Problema ou contexto:** Persistir agendamentos e bloqueios num contrato comum às operações da #2 e aos diferenciais da #6.
 - **Opções consideradas:**
   1. **Lista única na chave `"studio_rita_agendamentos"` com campo `tipo` (`"agendamento"` | `"bloqueio"`) e `status` (`"ativo"` | `"concluido"`), removendo ou inativando ao cancelar:** Centralização de todos os eventos que ocupam tempo na agenda.
   2. **Chaves separadas no `localStorage` para agendamentos de clientes e bloqueios da Rita:** Duas listas independentes (`"agendamentos"` e `"bloqueios"`).
 - **Decisão e motivo:** Escolhemos a **Opção 1 (Lista única unificada por data e horário)**. Tanto um agendamento de cliente quanto um bloqueio manual da Rita (RF07) têm o mesmo efeito prático na regra de negócio: ocupar um intervalo `[inicio, inicio + duracao]` num determinado dia (`YYYY-MM-DD`). Ao cancelar um agendamento (RF06), o registo é removido da lista ativa, libertando imediatamente o horário sem duplicar a lógica de verificação de conflito.
-- **Consequências ou riscos:** `src/storage/repositorio.js` serializa/desserializa o array na chave `studio_rita_agendamentos`. `listarPorData(dataISO)` exclui status `cancelado`, mas mantém `concluido`; `cancelarRegistro(id)` remove o item e `concluirRegistro(id)` altera seu status. Essas operações de apoio já existem, mas seus botões dependem das interfaces #5/#6. A leitura vazia ou inválida retorna `[]`; isso pode ocultar corrupção e permitir sobrescrita posterior. Não há sincronização entre dispositivos nem transações atômicas entre abas.
+- **Consequências ou riscos:** `src/storage/repositorio.js` serializa/desserializa o array na chave `studio_rita_agendamentos`. `listarPorData(dataISO)` exclui status `cancelado`, mas mantém `concluido`; `cancelarRegistro(id)` remove o item e `concluirRegistro(id)` altera seu status. As operações e seus botões estão integrados pelas interfaces #5/#6. Registros concluídos continuam ocupando o intervalo; cancelamentos e desbloqueios removem o registro. A leitura vazia ou inválida retorna `[]`; isso pode ocultar corrupção e permitir sobrescrita posterior. Não há sincronização entre dispositivos nem transações atômicas entre abas.
 
 ---
 
 ## D05 — Arquitetura em Camadas e Isolamento do DOM (`src/regras/` vs `src/ui/`)
+- **Data:** 27/10/2026
+- **Responsável (atribuição proposta, a confirmar):** IagoBNC (Iago)
+- **Problema ou contexto:** Integrar as telas #4/#5 e documentar a arquitetura na #7 mantendo DOM, regras e armazenamento separados; autoria original ainda a confirmar.
 - **Opções consideradas:**
   1. **Arquitetura modular estrita (`src/regras/`, `src/storage/`, `src/ui/`):** Funções em `src/regras/` recebem apenas dados primitivos/objetos por parâmetro e retornam novos valores, sem tocar em `document` ou `localStorage`.
   2. **Lógica acoplada aos ouvintes de eventos (`addEventListener`):** Ler inputs do HTML e validar conflitos dentro da mesma função de clique.
@@ -58,12 +77,14 @@ cancelamento, bloqueio e conclusão descrevem contratos de apoio, não entrega d
 - **D01:** `horarioDentroDoExpediente` e `listarHorariosDisponiveis` protegem almoço
   e fim do expediente; serviços podem terminar exatamente às 12h ou iniciar às 13h.
 - **D02/D03:** `horaParaMinutos`, `minutosParaHora` e `INTERVALO_SLOT = 30` confirmam
-  representação e grelha; não há conversores paralelos na interface.
+  representação e grelha. A main injeta os conversores reais no painel; a #6
+  também contém fallbacks locais de formatação/conversão e conflito, não usados
+  quando as dependências reais estão disponíveis. Essa diferença em relação à
+  centralização pretendida fica registrada para revisão, sem alterar o código.
 - **D04:** `salvarRegistro` gera id/status e mantém data, inicio, duracao, servicoId,
   servicoNome, preco, clienteNome e clienteTelefone. Dados persistem por origem.
 - **D05:** DOM em `src/ui/`; regras em `src/regras/`; acesso ao armazenamento em
   `src/storage/`. `src/main.js` conecta as dependências.
 
 O motor não filtra horários passados hoje. A decisão sobre essa regra ainda precisa
-ser alinhada com a equipe; não é registrada aqui como implementada. Não foram
-inventadas decisões de bloqueio, conclusão, WhatsApp ou deploy ainda não integrados.
+ser alinhada com a equipe; não é registrada aqui como implementada. Bloqueio, conclusão e WhatsApp estão integrados pelo PR #14. A publicação Pages e a tag ainda têm passos manuais, descritos em `docs/entrega-final.md`.
