@@ -63,7 +63,8 @@
   font-size: 0.9375rem;
 }
 
-.tela-painel-rita .painel-mensagem {
+.tela-painel-rita .painel-mensagem,
+.tela-painel-rita .painel-feedback {
   margin: 0;
 }
 
@@ -162,4 +163,9 @@
     width: auto;
     justify-self: start;
   }
+}
+
+.tela-painel-rita .painel-feedback:focus-visible {
+  outline: 3px solid var(--cor-primaria, #7c3aed);
+  outline-offset: 3px;
 }
